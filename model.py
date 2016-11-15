@@ -12,7 +12,7 @@ from imblearn.over_sampling import RandomOverSampler
 DF_TRAIN = pd.read_csv('training.csv')
 
 class Model:
-
+  ## use kaggle kicked competition as input data
   def __init__(self):
     self.raw_data = DF_TRAIN
     self.num_vars = ['VehYear', 'VehAge_Purch', 'VehOdo', 'VehBCost', 'WarrantyCost']
@@ -72,6 +72,15 @@ class Model:
     return rf_model, rf_model.score(self.X_test, self.y_test)
 
   def model_perf(self, grids = [.01, .015, .02], sample_perc = .005, iterations = 10, mode = 'regular'):
+    ## Evaluate model performance with different level of training data coverage
+    ## mode != 'regular' means we starts with less training data, train a model,
+    ## then based on the predcition of the model, we sample more training data
+    ## More specifically, with mode ='regular', one can directly
+    ## get x% of randomely selected data as training data; with a different mode,
+    ## one will get (x-y)% of randomly selected data as initial training data, then
+    ## apply the model to the remaining data to make predction, then select y% of randomly
+    ##selected data based on stratified sampling from the predicted labels; combine this
+    ## two sets will yield x%. 
     avg_scores = []
     for inc in grids:
       scores = []
